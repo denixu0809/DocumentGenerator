@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
-const port = 3000;
+const port = 80;
 
 // Middleware to parse incoming request bodies as text/html
 app.use(bodyParser.text({ type: 'text/html' }));
