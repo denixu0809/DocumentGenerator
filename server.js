@@ -1,10 +1,18 @@
+const https = require("https");
+
 const express = require('express');
+const cors = require('cors');
 const puppeteer = require('puppeteer');
 const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
-const port = 80;
+app.use(cors());
+
+const port = 443;
+
+const fs = require("fs");
+
 
 // Middleware to parse incoming request bodies as text/html
 app.use(bodyParser.text({ type: 'text/html' }));
@@ -61,8 +69,18 @@ app.post('/convert', async (req, res) => {
         console.error('Error generating PDF:', error);
         res.status(500).send('Internal Server Error');
     }
-});
+}); 
+// Creating object of key and certificate
+// for SSL
+const options = {
+    key: fs.readFileSync('/etc/letsencrypt/live/koti-api.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/koti-api.com/cert.pem'),
+    ca: fs.readFileSync('/etc/letsencrypt/live/koti-api.com/chain.pem')
+  };
 
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
-});
+// Creating https server by passing
+// options and app object
+https.createServer(options, app)
+    .listen(port, function (req, res) {
+        console.log(`Server is running at :${port}`);
+    });
