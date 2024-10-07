@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clients</title>
+  <link rel="stylesheet" href="/css/clients.css"> 
+</head>
+<body>
+  <div class="header">
+    <h1>Clients List</h1>
+    <!-- Button to open the add client modal -->
+    <button class="add-client-button" onclick="openAddClientModal()">Add Client</button>
+  </div>
+  
+  <!-- Clients Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>API Key</th>
+        <th>Total Credit</th>
+        <th>Used Credit</th>
+        <th>Remaining Credit</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% clients.forEach(client => { %>
+        <tr>
+          <td><%= client.name %></td>
+          <td><%= client.email %></td>
+          <td><%= client.api_key %></td>
+          <td><%= client.total_credit %></td>
+          <td><%= client.used_credit %></td>
+          <td><%= client.remaining_credit %></td>
+          <td>
+            <!-- Add Credit Form -->
+            <form action="/clients/add-credit/<%= client._id %>" method="POST" style="display:inline;">
+              <input type="number" name="additional_credit" placeholder="Add Credit" required>
+              <button type="submit" class="add-credit-button">Add Credit</button>
+            </form>
+            <!-- Delete Client Form -->
+            <form action="/clients/delete/<%= client._id %>" method="POST" style="display:inline;">
+              <button type="submit" class="delete-client-button">Delete</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <!-- Add Client Modal -->
+  <div id="addClientModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeAddClientModal()">&times;</span>
+      <form action="/clients/new" method="POST">
+        <h2>Add Client</h2>
+        <div class="form-group">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="credit">Credit:</label>
+          <input type="number" id="credit" name="credit" value="0" min="0" required>
+        </div>
+        <button type="submit">Register</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openAddClientModal() {
+      document.getElementById("addClientModal").style.display = "block";
+    }
+
+    function closeAddClientModal() {
+      document.getElementById("addClientModal").style.display = "none";
+    }
+  </script>
+</body>
+</html>
